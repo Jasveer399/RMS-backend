@@ -3,31 +3,37 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const Class = require("../models/classModel");
 
-router.post("/add-class",authMiddleware, async (req, res) => {
+router.post("/add-class", async (req, res) => {
   try {
-    let classData = await Class.findOne({
-      classCode: req.body.classCode,
-    });
+    const { classCode, classTitle, subjects } = req.body;
+
+    let classData = await Class.findOne({ classCode: classCode });
+
     if (classData) {
-      return res.status(409).send({
-        message: "This class code is already in use.",
-        success: false,
+      // If class exists, add new subject
+      const updatedClass = await Class.findOneAndUpdate(
+        { classCode: classCode },
+        { $push: { subjects: subjects } },
+        { new: true }
+      );
+      res.status(200).send({
+        message: "Subject added to existing class successfully!",
+        success: true,
+        data: updatedClass,
+      });
+    } else {
+      // If class doesn't exist, create new class
+      const newClass = await Class.create({
+        classCode: classCode,
+        classTitle: classTitle,
+        subjects: [subjects], // Note: subjects should be an array
+      });
+      res.status(200).send({
+        message: "New class added successfully!",
+        success: true,
+        data: newClass,
       });
     }
-    const { classCode, classTitle, subjects } = req.body;
-    const newClass = await Class.create({
-      classCode: classCode,
-      classTitle: classTitle,
-      subjects:{
-        subjectName: subjects.subjectName,
-        subjectCode: subjects.subjectCode,
-      },
-    });
-    res.status(200).send({
-      message: "New class added successfully!",
-      success: true,
-      data: newClass,
-    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -40,7 +46,12 @@ router.post("/add-class",authMiddleware, async (req, res) => {
 router.post("/get-all-classes", async (req, res) => {
   try {
     const classes = await Class.find().sort([["createdAt", "descending"]]);
-
+    if (!classes) {
+      res.status(404).json({
+        message: "Faild to fetched Classes",
+        success: false,
+      });
+    }
     res.status(200).json({
       message: "Classes fetched successfully!",
       success: true,
