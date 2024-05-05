@@ -54,13 +54,12 @@ router.post("/add-student", async (req, res) => {
       });
     } else {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
-      req.body.password = hashedPassword;
+      const hashedPassword = await bcrypt.hash(password, salt);
       const newStudent = await Student.create({
         name: name,
         rollNo: rollNo,
         email: email,
-        password: password,
+        password: hashedPassword,
       });
       res.status(200).send({
         message: "Student added successfully",
