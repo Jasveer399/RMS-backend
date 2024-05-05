@@ -14,6 +14,10 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide the 'email' field."],
   },
+  className: {
+    type: String,
+    required: [true, "Please provide the 'class' field."],
+  },
   password: {
     type: String,
     required: [true, "Please provide the 'password' field."],

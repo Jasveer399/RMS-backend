@@ -43,7 +43,7 @@ const jwt = require("jsonwebtoken");
 
 router.post("/add-student", async (req, res) => {
   try {
-    const { name, rollNo, email, password } = req.body;
+    const { name, rollNo, email, className, password } = req.body;
     const studentExists = await Student.findOne({
       rollNo: req.body.rollNo,
     });
@@ -59,6 +59,7 @@ router.post("/add-student", async (req, res) => {
         name: name,
         rollNo: rollNo,
         email: email,
+        className: className,
         password: hashedPassword,
       });
       res.status(200).send({
