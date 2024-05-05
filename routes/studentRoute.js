@@ -54,8 +54,8 @@ router.post("/add-student", async (req, res) => {
         success: false,
       });
     } else {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      // const salt = await bcrypt.genSalt(10);
+      // const hashedPassword = await bcrypt.hash(password, salt);
       const newStudent = await Student.create({
         name: name,
         rollNo: rollNo,
@@ -63,7 +63,7 @@ router.post("/add-student", async (req, res) => {
         className: className,
         gender: gender,
         phone: phone,
-        password: hashedPassword,
+        password: password,
       });
       res.status(200).send({
         message: "Student added successfully",
@@ -81,9 +81,15 @@ router.post("/add-student", async (req, res) => {
 });
 
 // get all students
-router.post("/get-all-students", authMiddleware, async (req, res) => {
+router.post("/get-all-students", async (req, res) => {
   try {
-    const students = await Student.find(req?.body ? req.body : {});
+    const students = await Student.find().sort([["createdAt", "descending"]]);
+    if (!students) {
+      res.status(404).json({
+        message: "Faild to fetched Class and Subject",
+        success: false,
+      });
+    }
     res.status(200).send({
       message: "Students fetched successfully",
       success: true,
@@ -97,7 +103,7 @@ router.post("/get-all-students", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/get-student/:rollNo", authMiddleware, async (req, res) => {
+router.post("/get-student/:rollNo", async (req, res) => {
   try {
     const student = await Student.findOne({
       rollNo: req.params.rollNo,
@@ -122,7 +128,7 @@ router.post("/get-student/:rollNo", authMiddleware, async (req, res) => {
 });
 
 // update student
-router.post("/update-student/:rollNo", authMiddleware, async (req, res) => {
+router.post("/update-student/:rollNo", async (req, res) => {
   try {
     const student = await Student.findOneAndUpdate(
       { rollNo: req.params.rollNo },
@@ -149,11 +155,9 @@ router.post("/update-student/:rollNo", authMiddleware, async (req, res) => {
 });
 
 // delete student
-router.post("/delete-student/:rollNo", authMiddleware, async (req, res) => {
+router.post("/delete-student/:id", async (req, res) => {
   try {
-    const student = await Student.findOneAndDelete({
-      rollNo: req.params.rollNo,
-    });
+    const student = await Student.findByIdAndDelete(req.params.id);
     if (!student) {
       return res.send({
         message: "Student not found",

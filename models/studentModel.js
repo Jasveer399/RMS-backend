@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const Class = require("./classModel");
+const Subject = require("./subjectModel");
+const Class = require("./classModel")
 const studentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -36,7 +37,7 @@ const studentSchema = new mongoose.Schema({
   },
   subjects: {
     type: [String],
-    ref: Class,
+    ref: Subject,
   },
   results: {
     type: Array,
