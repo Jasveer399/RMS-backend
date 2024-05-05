@@ -82,4 +82,33 @@ router.post("/delete-class/:id", async (req, res) => {
   }
 });
 
+router.post("/update-class/:id", async (req, res) => {
+  try {
+    const { classCode, className } = req.body;
+    const foundClass = await Class.findByIdAndUpdate(
+      req.params.id, // id of the document to update
+      { className: className, classCode: classCode }, // update object
+      { new: true } // options object to return the modified document
+    );
+
+    if (!foundClass) {
+      return res.status(404).json({
+        message: "Class not found",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: "Class Updated successfully",
+      success: true,
+      data: foundClass,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+});
+
 module.exports = router;
