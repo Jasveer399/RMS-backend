@@ -18,6 +18,14 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide the 'class' field."],
   },
+  gender: {
+    type: String,
+    required: [true, "Please provide the 'gender' field."],
+  },
+  phone: {
+    type: String,
+    required: [true, "Please provide the 'phone' field."],
+  },
   password: {
     type: String,
     required: [true, "Please provide the 'password' field."],
