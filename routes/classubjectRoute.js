@@ -5,22 +5,39 @@ const Class = require("../models/classModel");
 
 router.post("/add-class", async (req, res) => {
   try {
-    const { classCode, className } = req.body;
+    const { classCode, classTitle, subjects } = req.body;
 
     let classData = await Class.findOne({
-      className: className,
+      classCode: classCode,
     });
     if (classData) {
-      // If a class with the same name exists, return an error
-      return res.status(200).send({
-        message: "Class with this name already exists.",
-        success: false,
-      });
+      const foundSubject = classData.subjects.find(
+        (subject) => subject.subjectName === subjects.subjectName
+      );
+      if (foundSubject) {
+        res.status(200).send({
+          message: "Subject already exists in the class",
+          success: false,
+        });
+      } else {
+        // If class exists, add new subject
+        const updatedClass = await Class.findOneAndUpdate(
+          { classCode: classCode },
+          { $push: { subjects: subjects } },
+          { new: true }
+        );
+        res.status(200).send({
+          message: "Subject added to existing class successfully!",
+          success: true,
+          data: updatedClass,
+        });
+      }
     } else {
       // If class doesn't exist, create new class
       const newClass = await Class.create({
         classCode: classCode,
-        className: className,
+        classTitle: classTitle,
+        subjects: [subjects], // Note: subjects should be an array
       });
       res.status(200).send({
         message: "New class added successfully!",
@@ -72,7 +89,8 @@ router.post("/delete-class/:id", async (req, res) => {
 
     res.status(200).json({
       message: "Class deleted successfully",
-      success: true, // Optionally, you can include the deleted class data in the response
+      success: true,
+      data: foundClass, // Optionally, you can include the deleted class data in the response
     });
   } catch (error) {
     res.status(500).json({

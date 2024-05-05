@@ -8,17 +8,21 @@ const dotenv = require("dotenv");
 
 //dotenv conig
 dotenv.config();
-connectDb()
+connectDb();
 
 app.use(express.json());
 // app.use(cors());
 const studentRoute = require("./routes/studentRoute");
-const classRoute = require("./routes/classRoute")
-const resultsRoute = require("./routes/resultsRoute")
+const classSubjectRoute = require("./routes/classubjectRoute");
+const resultsRoute = require("./routes/resultsRoute");
+const classRoute = require("./routes/classRoute");
+const subjectRoute = require("./routes/subjectRoute");
 
 app.use("/api/student/", studentRoute);
-app.use('/api/classes/', classRoute);
-app.use('/api/results/', resultsRoute);
+app.use("/api/classSubject/", classSubjectRoute);
+app.use("/api/results/", resultsRoute);
+app.use("/api/classes/", classRoute);
+app.use("/api/subjectes/", subjectRoute);
 // app.use(proxy());
 const port = process.env.PORT || 4001;
 
@@ -32,5 +36,5 @@ app.get("*", function (req, res) {
 });
 
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });
