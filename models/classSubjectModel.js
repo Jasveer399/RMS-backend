@@ -8,7 +8,7 @@ const classSubjectSchema = new mongoose.Schema({
   },
   className: {
     type: String,
-    required: [true, "Please provide the class title"],
+    required: [true, "Please provide the class Name"],
   },
   subjects: [
     {

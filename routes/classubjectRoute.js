@@ -1,18 +1,18 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
-const Class = require("../models/classModel");
+const ClassSubject = require("../models/classSubjectModel");
 
-router.post("/add-class", async (req, res) => {
+router.post("/add-classSubject", async (req, res) => {
   try {
-    const { classCode, classTitle, subjects } = req.body;
-
-    let classData = await Class.findOne({
+    const { classCode, className, subjects } = req.body;
+    let classData = await ClassSubject.findOne({
       classCode: classCode,
     });
+
     if (classData) {
       const foundSubject = classData.subjects.find(
-        (subject) => subject.subjectName === subjects.subjectName
+        (subject) => subject.subjectName === subjects[0].subjectName // Access subjectName correctly
       );
       if (foundSubject) {
         res.status(200).send({
@@ -21,9 +21,9 @@ router.post("/add-class", async (req, res) => {
         });
       } else {
         // If class exists, add new subject
-        const updatedClass = await Class.findOneAndUpdate(
+        const updatedClass = await ClassSubject.findOneAndUpdate(
           { classCode: classCode },
-          { $push: { subjects: subjects } },
+          { $push: { subjects: { $each: subjects } } }, // Use $each to push multiple subjects
           { new: true }
         );
         res.status(200).send({
@@ -34,13 +34,13 @@ router.post("/add-class", async (req, res) => {
       }
     } else {
       // If class doesn't exist, create new class
-      const newClass = await Class.create({
+      const newClass = await ClassSubject.create({
         classCode: classCode,
-        classTitle: classTitle,
-        subjects: [subjects], // Note: subjects should be an array
+        className: className,
+        subjects: subjects, // Directly use the subjects array
       });
       res.status(200).send({
-        message: "New class added successfully!",
+        message: "New class With Subjects added successfully!",
         success: true,
         data: newClass,
       });
@@ -54,17 +54,19 @@ router.post("/add-class", async (req, res) => {
   }
 });
 
-router.post("/get-all-classes", async (req, res) => {
+router.get("/get-all-class-subject", async (req, res) => {
   try {
-    const classes = await Class.find().sort([["createdAt", "descending"]]);
+    const classes = await ClassSubject.find().sort([
+      ["createdAt", "descending"],
+    ]);
     if (!classes) {
       res.status(404).json({
-        message: "Faild to fetched Classes",
+        message: "Faild to fetched Class and Subject",
         success: false,
       });
     }
     res.status(200).json({
-      message: "Classes fetched successfully!",
+      message: "Class And Subject fetched successfully!",
       success: true,
       count: classes.length,
       data: classes,
@@ -76,19 +78,20 @@ router.post("/get-all-classes", async (req, res) => {
     });
   }
 });
-router.post("/delete-class/:id", async (req, res) => {
+router.post("/delete-class-subjects/:id", async (req, res) => {
   try {
     // Assuming `Class` is your model name
-    const foundClass = await Class.findByIdAndDelete(req.params.id);
+    console.log(req.params.id);
+    const foundClass = await ClassSubject.findByIdAndDelete(req.params.id);
     if (!foundClass) {
       return res.status(404).json({
-        message: "Class not found",
+        message: "Class And Subjects not found",
         success: false,
       });
     }
 
     res.status(200).json({
-      message: "Class deleted successfully",
+      message: "Class And Subjects deleted successfully",
       success: true,
       data: foundClass, // Optionally, you can include the deleted class data in the response
     });
