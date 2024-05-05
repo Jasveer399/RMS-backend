@@ -23,7 +23,7 @@ const studentSchema = new mongoose.Schema({
     required: [true, "Please provide the 'gender' field."],
   },
   phone: {
-    type: String,
+    type: Number,
     required: [true, "Please provide the 'phone' field."],
   },
   password: {
