@@ -6,8 +6,8 @@ const studentSchema = new mongoose.Schema({
     required: [true, "Please provide the 'Name' field."],
   },
   rollNo: {
-    type:String,
-    unique : true,
+    type: String,
+    unique: true,
     required: [true, "Please provide the 'rollNo' field."],
   },
   email: {
@@ -22,7 +22,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     ref: Class,
   },
-  subjects:{
+  subjects: {
     type: [String],
     ref: Class,
   },
@@ -31,4 +31,4 @@ const studentSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("students", studentSchema);
+module.exports = mongoose.model("Student", studentSchema);

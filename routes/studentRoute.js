@@ -5,43 +5,45 @@ const bcrypt = require("bcryptjs");
 const Student = require("../models/studentModel");
 const jwt = require("jsonwebtoken");
 
-router.post("/register", async (req, res) => {
-  try {
-    const { name, rollno, password, email } = await req.body;
-    const studentExists = await Student.findOne({
-      rollNo: rollno,
-    });
-    if (studentExists) {
-      return res.status(200).send({
-        message: "This roll number is already registered",
-        success: false,
-      });
-    }
+// router.post("/register", async (req, res) => {
+//   try {
+//     const { name, rollno, password, email } = await req.body;
+//     const studentExists = await Student.findOne({
+//       rollNo: rollno,
+//     });
+//     if (studentExists) {
+//       return res.status(200).send({
+//         message: "This roll number is already registered",
+//         success: false,
+//       });
+//     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const newStudent = new Student({
-      name: name,
-      rollNo: rollno,
-      password: hashedPassword,
-      email: email,
-    });
-    await newStudent.save();
-    res.status(200).send({
-      message: "Registration successful, Please wait for admin approval",
-      success: true,
-    });
-  } catch (error) {
-    console.log("An error occurred while saving the registration");
-    res.status(500).send({
-      message: error.message,
-      succes: false,
-      status:500,
-    });
-  }
-});
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
+//     const newStudent = new Student({
+//       name: name,
+//       rollNo: rollno,
+//       password: hashedPassword,
+//       email: email,
+//     });
+//     await newStudent.save();
+//     res.status(200).send({
+//       message: "Registration successful, Please wait for admin approval",
+//       success: true,
+//     });
+//   } catch (error) {
+//     console.log("An error occurred while saving the registration");
+//     res.status(500).send({
+//       message: error.message,
+//       succes: false,
+//       status: 500,
+//     });
+//   }
+// });
+
 router.post("/add-student", async (req, res) => {
   try {
+    const { name, rollNo, email, password } = req.body;
     const studentExists = await Student.findOne({
       rollNo: req.body.rollNo,
     });
@@ -50,17 +52,24 @@ router.post("/add-student", async (req, res) => {
         message: "Student already exists",
         success: false,
       });
+    } else {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      req.body.password = hashedPassword;
+      const newStudent = await Student.create({
+        name: name,
+        rollNo: rollNo,
+        email: email,
+        password: password,
+      });
+      res.status(200).send({
+        message: "Student added successfully",
+        success: true,
+        data: newStudent,
+      });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    req.body.password = hashedPassword;
-    const newStudent = new Student(req.body);
-    await newStudent.save();
-    res.status(200).send({
-      message: "Student added successfully",
-      success: true,
-    });
   } catch (error) {
+    console.log(error);
     res.status(500).send({
       message: error.message,
       succes: false,
@@ -79,7 +88,7 @@ router.post("/get-all-students", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     res.status(500).send({
-      message: error.message,
+      message: "Faild to fetched Students",
       success: false,
     });
   }

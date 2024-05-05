@@ -58,6 +58,7 @@ router.post("/get-all-subject", async (req, res) => {
     });
   }
 });
+
 router.post("/delete-subject/:id", async (req, res) => {
   try {
     // Assuming `Class` is your model name
