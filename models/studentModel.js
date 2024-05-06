@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Subject = require("./subjectModel");
-const Class = require("./classModel")
+const Class = require("./classModel");
 const studentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,6 +26,14 @@ const studentSchema = new mongoose.Schema({
   phone: {
     type: Number,
     required: [true, "Please provide the 'phone' field."],
+  },
+  dob: {
+    type: String,
+    required: [true, "Please provide the 'dob' field."],
+  },
+  semester: {
+    type: String,
+    required: [true, "Please provide the 'semester' field."],
   },
   password: {
     type: String,
