@@ -43,16 +43,8 @@ const jwt = require("jsonwebtoken");
 
 router.post("/add-student", async (req, res) => {
   try {
-    const {
-      name,
-      rollNo,
-      email,
-      className,
-      gender,
-      dob,
-      semester,
-      phone,
-    } = req.body;
+    const { name, rollNo, email, className, gender, dob, semester, phone } =
+      req.body;
     const studentExists = await Student.findOne({
       rollNo: req.body.rollNo,
     });
@@ -221,5 +213,48 @@ router.post("/studentlogin", async (req, res) => {
     });
   }
 });
+
+router.post("/add-results", async (req, res) => {
+  try {
+    const { results } = req.body;
+    const errors = [];
+    console.log(results);
+    // Use Promise.all to handle all updates asynchronously
+    await Promise.all(results.map(async (result) => {
+      try {
+        await Student.findByIdAndUpdate(
+          result.student_id,
+          { $push: { results: result } },
+          { new: true }
+        );
+        console.log("Result added for student ID:", result.student_id);
+      } catch (error) {
+        console.error("Error adding result for student ID:", result.student_id, error);
+        errors.push({ student_id: result.student_id, error: error.message });
+      }
+    }));
+
+    // Check if there were errors
+    if (errors.length > 0) {
+      res.status(500).send({
+        message: "Some results were not added successfully",
+        errors: errors,
+        success: false,
+      });
+    } else {
+      res.status(200).send({
+        message: "All results added successfully",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({
+      message: error.message,
+      success: false,
+    });
+  }
+});
+
 
 module.exports = router;

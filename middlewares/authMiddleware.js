@@ -16,8 +16,8 @@ module.exports = (req, res, next) => {
             throw new Error('Invalid token payload.');
         }
         next();
-    } catch (error) {
+    }
+    catch (error) {
         return res.status(500).send({message: 'Access denied. Invalid token.' , success: false});
     }
-
 }

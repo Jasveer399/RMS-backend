@@ -43,9 +43,22 @@ const studentSchema = new mongoose.Schema({
     type: [String],
     ref: Subject,
   },
-  results: {
-    type: Array,
-  },
+  results: [
+    {
+      subject: {
+        type: String,
+        required: [true, "Please provide the'subjects' field."],
+      },
+      totalmarks: {
+        type: String,
+        required: [true, "Please provide the 'Total Marks' field."],
+      },
+      obtainmarks: {
+        type: String,
+        required: [true, "Please provide the 'Obtainmarks' field."],
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Student", studentSchema);
