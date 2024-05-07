@@ -52,7 +52,6 @@ router.post("/add-student", async (req, res) => {
       dob,
       semester,
       phone,
-      password,
     } = req.body;
     const studentExists = await Student.findOne({
       rollNo: req.body.rollNo,
@@ -72,9 +71,8 @@ router.post("/add-student", async (req, res) => {
         className: className,
         gender: gender,
         dob: dob,
-        semester: semester,
         phone: phone,
-        password: password,
+        semester: semester,
       });
       res.status(200).send({
         message: "Student added successfully",
