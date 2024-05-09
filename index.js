@@ -17,12 +17,14 @@ const classSubjectRoute = require("./routes/classubjectRoute");
 const resultsRoute = require("./routes/resultsRoute");
 const classRoute = require("./routes/classRoute");
 const subjectRoute = require("./routes/subjectRoute");
+const adminRoute = require("./routes/adminRoute");
 
 app.use("/api/student/", studentRoute);
 app.use("/api/classSubject/", classSubjectRoute);
 app.use("/api/results/", resultsRoute);
 app.use("/api/classes/", classRoute);
 app.use("/api/subjectes/", subjectRoute);
+app.use("/api/admin/", adminRoute);
 // app.use(proxy());
 const port = process.env.PORT || 4001;
 
