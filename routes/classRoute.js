@@ -3,7 +3,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const Class = require("../models/classModel");
 
-router.post("/add-class", async (req, res) => {
+router.post("/add-class",authMiddleware, async (req, res) => {
   try {
     const { classCode, className } = req.body;
 
@@ -37,7 +37,7 @@ router.post("/add-class", async (req, res) => {
   }
 });
 
-router.post("/get-all-classes", async (req, res) => {
+router.post("/get-all-classes",authMiddleware, async (req, res) => {
   try {
     const classes = await Class.find().sort([["createdAt", "descending"]]);
     if (!classes) {
@@ -59,7 +59,7 @@ router.post("/get-all-classes", async (req, res) => {
     });
   }
 });
-router.post("/delete-class/:id", async (req, res) => {
+router.post("/delete-class/:id",authMiddleware, async (req, res) => {
   try {
     // Assuming `Class` is your model name
     const foundClass = await Class.findByIdAndDelete(req.params.id);
@@ -82,7 +82,7 @@ router.post("/delete-class/:id", async (req, res) => {
   }
 });
 
-router.post("/update-class/:id", async (req, res) => {
+router.post("/update-class/:id",authMiddleware, async (req, res) => {
   try {
     const { classCode, className } = req.body;
     const foundClass = await Class.findByIdAndUpdate(

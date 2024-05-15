@@ -3,7 +3,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const Subject = require("../models/subjectModel");
 
-router.post("/add-subject", async (req, res) => {
+router.post("/add-subject",authMiddleware, async (req, res) => {
   try {
     const { subjectName, subjectCode } = req.body;
     let SubjectData = await Subject.findOne({
@@ -59,7 +59,7 @@ router.post("/get-all-subject", async (req, res) => {
   }
 });
 
-router.post("/delete-subject/:id", async (req, res) => {
+router.post("/delete-subject/:id",authMiddleware, async (req, res) => {
   try {
     // Assuming `Class` is your model name
     const foundsubject = await Subject.findByIdAndDelete(req.params.id);
@@ -81,7 +81,7 @@ router.post("/delete-subject/:id", async (req, res) => {
   }
 });
 
-router.post("/update-subject/:id", async (req, res) => {
+router.post("/update-subject/:id",authMiddleware, async (req, res) => {
   try {
     const { subjectName, subjectCode } = req.body;
     const foundSubject = await Subject.findByIdAndUpdate(

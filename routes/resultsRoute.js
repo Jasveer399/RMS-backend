@@ -31,7 +31,7 @@ router.post("/add-result", authMiddleware, async (req, res) => {
 });
 
 // get all results
-router.post("/get-all-results", async (req, res) => {
+router.post("/get-all-results",authMiddleware, async (req, res) => {
   try {
     const results = await Result.find();
     res.status(200).send({
@@ -48,7 +48,7 @@ router.post("/get-all-results", async (req, res) => {
 });
 
 // get result by id
-router.post("/get-result/:resultId", async (req, res) => {
+router.post("/get-result/:resultId",authMiddleware, async (req, res) => {
   try {
     const result = await Result.findById(req.params.resultId);
     res.status(200).send({
@@ -116,7 +116,7 @@ router.post("/save-student-result", authMiddleware, async (req, res) => {
 });
 
 // get student result by id
-router.post("/get-student-result", async (req, res) => {
+router.post("/get-student-result",authMiddleware, async (req, res) => {
   try {
     const student = await Student.findOne({
       rollNo: req.body.rollNo,

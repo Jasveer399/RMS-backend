@@ -41,7 +41,7 @@ const jwt = require("jsonwebtoken");
 //   }
 // });
 
-router.post("/add-student", async (req, res) => {
+router.post("/add-student",authMiddleware, async (req, res) => {
   try {
     const { name, rollNo, email, className, gender, dob, semester, phone } =
       req.body;
@@ -129,7 +129,7 @@ router.post("/get-student/:rollNo", async (req, res) => {
 });
 
 // update student
-router.post("/update-student/:rollNo", async (req, res) => {
+router.post("/update-student/:rollNo",authMiddleware, async (req, res) => {
   try {
     const student = await Student.findOneAndUpdate(
       { rollNo: req.params.rollNo },
@@ -156,7 +156,7 @@ router.post("/update-student/:rollNo", async (req, res) => {
 });
 
 // delete student
-router.post("/delete-student/:id", async (req, res) => {
+router.post("/delete-student/:id",authMiddleware, async (req, res) => {
   try {
     const student = await Student.findByIdAndDelete(req.params.id);
     if (!student) {
@@ -214,7 +214,7 @@ router.post("/studentlogin", async (req, res) => {
   }
 });
 
-router.post("/add-results", async (req, res) => {
+router.post("/add-results",authMiddleware, async (req, res) => {
   try {
     const { results } = req.body;
     const errors = [];

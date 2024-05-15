@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Admin = require("../models/adminRegisterModel");
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/register", async (req, res) => {
   try {
@@ -49,10 +51,14 @@ router.post("/login", async (req, res) => {
         success: false,
       });
     } else {
+      const token = jwt.sign({ isAdmin: true }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
       return res.status(200).send({
         message: "Admin Login",
         success: true,
         data: admin,
+        token:token,
       });
     }
   } catch (error) {
@@ -64,7 +70,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/change-password", async (req, res) => {
+router.post("/change-password",authMiddleware, async (req, res) => {
   try {
     const { oldpassword, newpassword } = req.body;
     let admin = await Admin.findOne({
