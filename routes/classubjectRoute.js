@@ -54,7 +54,7 @@ router.post("/add-classSubject",authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/get-all-class-subject",authMiddleware, async (req, res) => {
+router.get("/get-all-class-subject", async (req, res) => {
   try {
     const classes = await ClassSubject.find().sort([
       ["createdAt", "descending"],
