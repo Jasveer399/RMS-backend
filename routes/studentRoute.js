@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const Student = require("../models/studentModel");
 const jwt = require("jsonwebtoken");
+const { date } = require("joi");
 
 // router.post("/register", async (req, res) => {
 //   try {
@@ -41,7 +42,7 @@ const jwt = require("jsonwebtoken");
 //   }
 // });
 
-router.post("/add-student",authMiddleware, async (req, res) => {
+router.post("/add-student", async (req, res) => {
   try {
     const { name, rollNo, email, className, gender, dob, semester, phone } =
       req.body;
@@ -129,7 +130,7 @@ router.post("/get-student/:rollNo", async (req, res) => {
 });
 
 // update student
-router.post("/update-student/:rollNo",authMiddleware, async (req, res) => {
+router.post("/update-student/:rollNo", async (req, res) => {
   try {
     const student = await Student.findOneAndUpdate(
       { rollNo: req.params.rollNo },
@@ -156,7 +157,7 @@ router.post("/update-student/:rollNo",authMiddleware, async (req, res) => {
 });
 
 // delete student
-router.post("/delete-student/:id",authMiddleware, async (req, res) => {
+router.post("/delete-student/:id", async (req, res) => {
   try {
     const student = await Student.findByIdAndDelete(req.params.id);
     if (!student) {
@@ -214,25 +215,31 @@ router.post("/studentlogin", async (req, res) => {
   }
 });
 
-router.post("/add-results",authMiddleware, async (req, res) => {
+router.post("/add-results", async (req, res) => {
   try {
     const { results } = req.body;
     const errors = [];
     console.log(results);
     // Use Promise.all to handle all updates asynchronously
-    await Promise.all(results.map(async (result) => {
-      try {
-        await Student.findByIdAndUpdate(
-          result.student_id,
-          { $push: { results: result } },
-          { new: true }
-        );
-        console.log("Result added for student ID:", result.student_id);
-      } catch (error) {
-        console.error("Error adding result for student ID:", result.student_id, error);
-        errors.push({ student_id: result.student_id, error: error.message });
-      }
-    }));
+    await Promise.all(
+      results.map(async (result) => {
+        try {
+          await Student.findByIdAndUpdate(
+            result.student_id,
+            { $push: { results: result } },
+            { new: true }
+          );
+          console.log("Result added for student ID:", result.student_id);
+        } catch (error) {
+          console.error(
+            "Error adding result for student ID:",
+            result.student_id,
+            error
+          );
+          errors.push({ student_id: result.student_id, error: error.message });
+        }
+      })
+    );
 
     // Check if there were errors
     if (errors.length > 0) {
@@ -256,5 +263,27 @@ router.post("/add-results",authMiddleware, async (req, res) => {
   }
 });
 
+router.post("/login-student", async (req, res) => {
+  try {
+    const { rollNo, dob } = req.body;
+    console.log(rollNo, dob);
+    const student = await Student.findOne({
+      rollNo: rollNo,
+      dob: dob,
+    });
+    if (!student) {
+      return res.status(401).send({
+        message: "Incorrect Student Roll No or DOB",
+        success: false,
+      });
+    } else {
+      res.status(200).send({
+        message: `WelCome ${student.name}`,
+        success: true,
+        data: student,
+      });
+    }
+  } catch (error) {}
+});
 
 module.exports = router;

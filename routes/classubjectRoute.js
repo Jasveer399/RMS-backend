@@ -3,7 +3,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const ClassSubject = require("../models/classSubjectModel");
 
-router.post("/add-classSubject",authMiddleware, async (req, res) => {
+router.post("/add-classSubject", async (req, res) => {
   try {
     const { classCode, className, subjects } = req.body;
     let classData = await ClassSubject.findOne({
@@ -78,7 +78,7 @@ router.get("/get-all-class-subject", async (req, res) => {
     });
   }
 });
-router.post("/delete-class-subjects/:id",authMiddleware, async (req, res) => {
+router.post("/delete-class-subjects/:id", async (req, res) => {
   try {
     // Assuming `Class` is your model name
     console.log(req.params.id);

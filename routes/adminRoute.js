@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/change-password",authMiddleware, async (req, res) => {
+router.post("/change-password", async (req, res) => {
   try {
     const { oldpassword, newpassword } = req.body;
     let admin = await Admin.findOne({

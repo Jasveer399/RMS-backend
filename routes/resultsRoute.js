@@ -5,7 +5,7 @@ const Result = require("../models/resultsModel");
 const Student = require("../models/studentModel");
 
 //  add new result
-router.post("/add-result", authMiddleware, async (req, res) => {
+router.post("/add-result", async (req, res) => {
   try {
     const resultExists = await Result.findOne({
       examination: req.body.examination,
@@ -31,7 +31,7 @@ router.post("/add-result", authMiddleware, async (req, res) => {
 });
 
 // get all results
-router.post("/get-all-results",authMiddleware, async (req, res) => {
+router.post("/get-all-results", async (req, res) => {
   try {
     const results = await Result.find();
     res.status(200).send({
@@ -48,7 +48,7 @@ router.post("/get-all-results",authMiddleware, async (req, res) => {
 });
 
 // get result by id
-router.post("/get-result/:resultId",authMiddleware, async (req, res) => {
+router.post("/get-result/:resultId", async (req, res) => {
   try {
     const result = await Result.findById(req.params.resultId);
     res.status(200).send({
@@ -65,7 +65,7 @@ router.post("/get-result/:resultId",authMiddleware, async (req, res) => {
 });
 
 // add student result
-router.post("/save-student-result", authMiddleware, async (req, res) => {
+router.post("/save-student-result", async (req, res) => {
   try {
     const student = await Student.findById(req.body.studentId);
     if (!student) {
@@ -116,7 +116,7 @@ router.post("/save-student-result", authMiddleware, async (req, res) => {
 });
 
 // get student result by id
-router.post("/get-student-result",authMiddleware, async (req, res) => {
+router.post("/get-student-result", async (req, res) => {
   try {
     const student = await Student.findOne({
       rollNo: req.body.rollNo,
@@ -155,7 +155,7 @@ router.post("/get-student-result",authMiddleware, async (req, res) => {
 });
 
 // delete result
-router.post("/delete-result/:resultId", authMiddleware, async (req, res) => {
+router.post("/delete-result/:resultId", async (req, res) => {
   try {
     const result = await Result.findByIdAndDelete(req.params.resultId);
     if (!result) {
