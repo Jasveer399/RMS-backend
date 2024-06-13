@@ -4,6 +4,7 @@ const colors = require("colors");
 const morgan = require("morgan");
 const connectDb = require("./config/dbConfig");
 const dotenv = require("dotenv");
+const cors = require('cors');
 // const proxy= require('./proxy');
 
 //dotenv conig
@@ -11,7 +12,7 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000' }));
 const studentRoute = require("./routes/studentRoute");
 const classSubjectRoute = require("./routes/classubjectRoute");
 const resultsRoute = require("./routes/resultsRoute");
