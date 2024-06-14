@@ -12,7 +12,7 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
-app.use(cors({ origin: 'https://rms-rust.vercel.app/' }));
+app.use(cors({ origin: 'https://result-ms.vercel.app/' }));
 const studentRoute = require("./routes/studentRoute");
 const classSubjectRoute = require("./routes/classubjectRoute");
 const resultsRoute = require("./routes/resultsRoute");
