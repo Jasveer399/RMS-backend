@@ -12,16 +12,7 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://rms-rust.vercel.app/'];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-}));
+app.use(cors({ origin: 'https://rms-rust.vercel.app/' }));
 const studentRoute = require("./routes/studentRoute");
 const classSubjectRoute = require("./routes/classubjectRoute");
 const resultsRoute = require("./routes/resultsRoute");
