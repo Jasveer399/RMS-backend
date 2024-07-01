@@ -4,7 +4,7 @@ const colors = require("colors");
 const morgan = require("morgan");
 const connectDb = require("./config/dbConfig");
 const dotenv = require("dotenv");
-const cors = require('cors');
+const cors = require("cors");
 // const proxy= require('./proxy');
 
 //dotenv conig
@@ -12,7 +12,9 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
-app.use(cors({ origin: 'https://result-ms.vercel.app' }));
+app.use(
+  cors({ origin: ["https://result-ms.vercel.app", "http://localhost:3000"] })
+);
 const studentRoute = require("./routes/studentRoute");
 const classSubjectRoute = require("./routes/classubjectRoute");
 const resultsRoute = require("./routes/resultsRoute");
